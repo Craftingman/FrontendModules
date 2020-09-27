@@ -26,6 +26,7 @@
 
 .dropdownResult {
 	box-sizing: border-box;
+	cursor: pointer;
 	padding: 4px;
 	background: #AFEEEE;
 }

@@ -5,15 +5,7 @@ $("document").ready( function() {
 	let fruits = ['apple', 'orange', 'pear', 'pineapple', 'lemon', 
 	'banana', 'melon', 'watermelon', 'apricot'];
 
-	fruitDropdownInput.on("focus", function() {
-		fillDropdown(fruitDropdown, fruits);
-	});
-	fruitDropdownInput.on("keyup", function() {
-		fillDropdown(fruitDropdown, fruits);
-	});
-	fruitDropdownInput.on("blur", function(e) {
-		fruitDropdownResults.hide();
-	});
+	initDropdown(fruitDropdown, fruits);
 });
 
 
@@ -28,7 +20,7 @@ function fillDropdown(dropdown, elms) {
 
 	if(val.length > 0) {
 		for (el of elms) {
-			if (el.includes(val)) {
+			if (el.toLowerCase().includes(val.toLowerCase())) {
 				matchedElms.push(el);
 			}
 		}
@@ -44,13 +36,34 @@ function fillDropdown(dropdown, elms) {
 	}
 
 	resultsBox.off("mousedown");
+	input.off("blur");
+
 	resultsBox.show(0, function() {
 		resultsBox.on("mousedown", function(e) {
 			if ($(e.target).is('.dropdownResult')) {
 				input.val($(e.target).text());
+				input.off("blur");	
 			}
 			resultsBox.hide();
 		});
 	});
-	
+	input.on("blur", function(e) {
+		dropdown.children(".dropdownResultsBox").hide();
+		if ( !(matchedElms.includes(input.val())) && matchedElms.length > 0) {
+			input.val(matchedElms[0]);
+		} else if (matchedElms.length == 0) {
+			input.val(elms[0]);
+		}
+	});
+}
+
+function initDropdown(dropdown, elms) {
+	let dropdownInput = dropdown.children(".dropdownInput");
+
+	dropdownInput.on("focus", function() {
+		fillDropdown(dropdown, elms);
+	});
+	dropdownInput.on("keyup", function() {
+		fillDropdown(dropdown, elms);
+	});
 }
